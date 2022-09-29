@@ -25,7 +25,7 @@ class Product extends Equatable {
       : name = data['name'] ?? data['product_name'],
         description = data['description'] ?? '',
         price = data['price'] == null ? null : double.tryParse(data['price']),
-        image = 'assets/images/drug_images/soap_bottle.png',
+        image = data['image'],
         category = Category.fromJson(data['category']),
         stock = data['stock'] ?? data['status'],
         id = data['id'],

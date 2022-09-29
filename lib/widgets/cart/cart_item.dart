@@ -1,3 +1,4 @@
+import 'package:contra/constants/api.dart';
 import 'package:contra/constants/colors.dart';
 import 'package:contra/model/cart.dart';
 import 'package:contra/providers/cart_provider.dart';
@@ -27,9 +28,8 @@ class _CartItemState extends State<CartItem> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Image.asset(
-                widget.cart.product.image ??
-                    'assets/images/drug_images/soap_bottle.png',
+              Image.network(
+                widget.cart.product.image ?? defaultImg,
                 height: 80.h,
               ),
               Column(

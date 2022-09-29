@@ -1,3 +1,4 @@
+import 'package:contra/constants/api.dart';
 import 'package:contra/constants/colors.dart';
 import 'package:contra/constants/sizing.dart';
 import 'package:contra/data/temp_data.dart';
@@ -161,8 +162,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.vertical(top: Radius.circular(10.r)),
-                child: Image.asset(
-                  product.image ?? "assets/images/drug_images/pills_bottle.png",
+                child: Image.network(
+                  product.image ?? defaultImg,
                   fit: BoxFit.fill,
                 ),
               ),
@@ -181,6 +182,9 @@ class _CategoryScreenState extends State<CategoryScreen> {
   }
 
   Widget _buildAllProductsRow(List<Product> products) {
+    if (products.isEmpty) {
+      return const Text('No products for this category');
+    }
     return GridView(
       physics: NeverScrollableScrollPhysics(),
       shrinkWrap: true,

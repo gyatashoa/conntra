@@ -1,3 +1,4 @@
+import 'package:contra/constants/api.dart';
 import 'package:contra/constants/colors.dart';
 import 'package:contra/constants/sizing.dart';
 import 'package:contra/model/product.dart';
@@ -142,8 +143,8 @@ class _ProductBody extends StatelessWidget {
               height: 140.h,
               decoration: BoxDecoration(
                 image: DecorationImage(
-                    image: AssetImage(
-                  product.image ?? 'assets/images/drug_images/soap_bottle.png',
+                    image: NetworkImage(
+                  product.image ?? defaultImg,
                 )),
                 color: Color(0xFFF8F8F8),
                 borderRadius: BorderRadius.circular(10.r),

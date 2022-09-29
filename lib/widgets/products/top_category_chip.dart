@@ -13,12 +13,14 @@ class TopCategoryChip extends StatelessWidget {
       required this.category,
       required this.title,
       Key? key,
+      required this.color,
       required this.bg})
       : super(key: key);
   final String imgUrl;
   final Category category;
   final String title;
   final LinearGradient bg;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
@@ -54,12 +56,12 @@ class TopCategoryChip extends StatelessWidget {
                     width: 48.sp,
                     decoration: BoxDecoration(gradient: bg),
                     child: Center(
-                      child: Image.asset(
-                          "assets/images/category_icons/$imgUrl.png",
-                          width: 29.sp,
-                          height: 29.sp,
-                          fit: BoxFit.fill),
-                    ),
+                        // child: Image.asset(
+                        //     "assets/images/category_icons/$imgUrl.png",
+                        //     width: 29.sp,
+                        //     height: 29.sp,
+                        //     fit: BoxFit.fill),
+                        ),
                   ),
                 ),
                 addVerticalSpace(5.h),

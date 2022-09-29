@@ -2,6 +2,8 @@ import 'dart:developer';
 
 import 'package:contra/constants/api.dart';
 import 'package:contra/model/category.dart';
+import 'package:contra/model/news.dart';
+import 'package:contra/model/prediction.dart';
 import 'package:contra/model/product.dart';
 import 'package:contra/model/user.dart';
 import 'package:dio/dio.dart';
@@ -24,7 +26,7 @@ class ApiService {
       return msg;
     } on DioError catch (e) {
       if (e.response?.data["errors"] == null) {
-        return 'Invalid credentials';
+        return 'Error logging in';
       }
       return Map<String, dynamic>.from(e.response?.data["errors"])
           .values
@@ -53,6 +55,11 @@ class ApiService {
     }
   }
 
+  Future<List<News>> getNews() async {
+    var res = await _dio.get(NEWS_API_URL + NEWS_API_KEY);
+    return (res.data['articles'] as List).map((e) => News.fromJson(e)).toList();
+  }
+
   Future getProductsForACategory(
       {required String token, required Category category}) async {
     try {
@@ -69,6 +76,26 @@ class ApiService {
       return 'Error connecting to backend';
     } on Exception {
       return 'Error getting products';
+    }
+  }
+
+  Future getLocation(String placeName) async {
+    try {
+      String mapKey = 'AIzaSyChlSYajoQ0gJ0tBW-_ViE5ACej3fdcn1o';
+      String url =
+          'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$placeName&key=$mapKey&sessiontoken=123254251&components=country:gh';
+      var res = await _dio.get(url);
+      if (res.statusCode == 200) {
+        var predictionJson = res.data['predictions'];
+        return (predictionJson as List)
+            .map((e) => Prediction.fromJson(e))
+            .toList();
+      }
+      return 'Error getting location';
+    } on DioError {
+      return 'Error getting location';
+    } on Exception {
+      return 'Error getting location';
     }
   }
 

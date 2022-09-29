@@ -44,7 +44,7 @@ class ProductCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(9.0.r),
                   color: Color(0xFFEEEEF0),
                 ),
-                child: Image.asset(
+                child: Image.network(
                   product.image ?? 'assets/images/drug_images/soap_bottle.png',
                   width: 157.w,
                   height: 130.h,

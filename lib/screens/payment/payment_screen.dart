@@ -90,29 +90,29 @@ class _PaymentScreenState extends State<PaymentScreen> {
               // AddressTile(),
               AddressTile(),
               addVerticalSpace(10.h),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                      onPressed: () {},
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.add,
-                            color: primaryDeepBlueText,
-                          ),
-                          Text("Add Address",
-                              style: GoogleFonts.poppins(
-                                color: primaryDeepBlueText,
-                                fontSize: 14.0,
-                                fontWeight: FontWeight.w400,
-                              )),
-                        ],
-                      )),
-                ],
-              ),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.end,
+              //   children: [
+              //     TextButton(
+              //         onPressed: () {},
+              //         child: Row(
+              //           mainAxisAlignment: MainAxisAlignment.end,
+              //           mainAxisSize: MainAxisSize.min,
+              //           children: [
+              //             Icon(
+              //               Icons.add,
+              //               color: primaryDeepBlueText,
+              //             ),
+              //             Text("Add Address",
+              //                 style: GoogleFonts.poppins(
+              //                   color: primaryDeepBlueText,
+              //                   fontSize: 14.0,
+              //                   fontWeight: FontWeight.w400,
+              //                 )),
+              //           ],
+              //         )),
+              //   ],
+              // ),
               addVerticalSpace(10.h),
               Text("Payment Method",
                   style: GoogleFonts.poppins(
@@ -179,7 +179,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
               ),
               addVerticalSpace(70.h),
               CCElevatedButton(
-                  text: "Place Order @ GHC 200",
+                  text: "Place Order",
                   onPress: () {
                     Navigator.pushNamed(
                         context, PaymentConfirmScreen.routeName);

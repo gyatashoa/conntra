@@ -1,3 +1,4 @@
+import 'package:contra/constants/api.dart';
 import 'package:contra/model/product.dart';
 import 'package:contra/screens/products/product_screen.dart';
 import 'package:contra/utils/ui.dart';
@@ -43,8 +44,8 @@ class DealsProductCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(9.0.r),
                 color: Color(0xFFEEEEF0),
               ),
-              child: Image.asset(
-                'assets/images/drug_images/soap_bottle.png',
+              child: Image.network(
+                product.image ?? defaultImg,
                 width: 20.w,
                 height: 130.h,
                 fit: BoxFit.contain,

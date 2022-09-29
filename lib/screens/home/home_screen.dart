@@ -279,6 +279,8 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  List<Color> colors = [Colors.red, Colors.yellowAccent, Colors.blue];
+
   Widget _buildCategoriesList(List<Category> categories) {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -288,6 +290,7 @@ class _HomeScreenState extends State<HomeScreen> {
               .map((i, value) => MapEntry(
                   i,
                   TopCategoryChip(
+                      color: colors[i],
                       category: categories[i],
                       imgUrl: 'img_1',
                       title: value.categoryName,
