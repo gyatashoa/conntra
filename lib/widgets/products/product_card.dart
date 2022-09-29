@@ -1,3 +1,5 @@
+import 'package:contra/data/temp_data.dart';
+import 'package:contra/model/product.dart';
 import 'package:contra/screens/products/product_screen.dart';
 import 'package:contra/utils/ui.dart';
 import 'package:flutter/material.dart';
@@ -5,13 +7,15 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ProductCard extends StatelessWidget {
-  const ProductCard({Key? key}) : super(key: key);
+  final Product product;
+  const ProductCard({Key? key, required this.product}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: (){
-        Navigator.of(context).pushNamed(ProductScreen.routeName);
+      onTap: () {
+        Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => ProductScreen(product: product)));
       },
       child: Ink(
         child: Container(
@@ -22,13 +26,13 @@ class ProductCard extends StatelessWidget {
             border: Border.all(width: 1, color: Color(0xFFEBEBEB)),
             borderRadius: BorderRadius.circular(9.0.r),
             color: Colors.white,
-          //   boxShadow: <BoxShadow>[
-          //     BoxShadow(
-          //       color: Color(0xFF000000).withOpacity(0.03),
-          //       offset: Offset(0.0, 3.0),
-          //       blurRadius: 13.0,
-          //     ),
-          //   ],
+            //   boxShadow: <BoxShadow>[
+            //     BoxShadow(
+            //       color: Color(0xFF000000).withOpacity(0.03),
+            //       offset: Offset(0.0, 3.0),
+            //       blurRadius: 13.0,
+            //     ),
+            //   ],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -41,7 +45,7 @@ class ProductCard extends StatelessWidget {
                   color: Color(0xFFEEEEF0),
                 ),
                 child: Image.asset(
-                  "assets/images/drug_images/soap_bottle.png",
+                  product.image ?? 'assets/images/drug_images/soap_bottle.png',
                   width: 157.w,
                   height: 130.h,
                   fit: BoxFit.fill,
@@ -54,20 +58,21 @@ class ProductCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Accu-Check Active\nTest Strip",
+                      product.name,
                       style: TextStyle(fontSize: 13.0.sp, height: 1.46),
                     ),
                     addVerticalSpace(8.h),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          "GHC 112",
-                          style: TextStyle(
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
+                        // Text(
+                        //   "GHC ${product.price}",
+                        //   style: const TextStyle(
+                        //     fontSize: 16.0,
+                        //     fontWeight: FontWeight.w700,
+                        //   ),
+                        // ),
+                        Spacer(),
                         Container(
                           width: 48.w,
                           height: 24.h,
@@ -79,7 +84,8 @@ class ProductCard extends StatelessWidget {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.star, color: Colors.white, size: 16.sp),
+                              Icon(Icons.star,
+                                  color: Colors.white, size: 16.sp),
                               addHorizontalSpace(3.0.w),
                               Text(
                                 "4.2",

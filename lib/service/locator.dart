@@ -5,5 +5,6 @@ import 'package:get_it/get_it.dart';
 final getIt = GetIt.instance;
 
 void registerServices() {
-  getIt.registerSingleton<ApiService>(ApiService(Dio()));
+  getIt.registerSingleton<ApiService>(ApiService(Dio(BaseOptions(
+      headers: {'Accept': 'application/json'}, followRedirects: false))));
 }

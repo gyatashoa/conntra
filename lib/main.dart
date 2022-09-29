@@ -1,5 +1,8 @@
+import 'package:contra/model/category.dart';
 import 'package:contra/providers/cart_provider.dart';
+import 'package:contra/providers/user_provider.dart';
 import 'package:contra/screens/auth/login_screen.dart';
+import 'package:contra/screens/auth/register.dart';
 import 'package:contra/screens/auth/signup_screen.dart';
 import 'package:contra/screens/cart/cart_screen.dart';
 import 'package:contra/screens/home/bottom_nav_screen.dart';
@@ -34,7 +37,8 @@ class MyApp extends StatelessWidget {
       designSize: const Size(375, 812),
       builder: (context, child) => MultiProvider(
         providers: [
-          ChangeNotifierProvider<CartProvider>(create: (_) => CartProvider())
+          ChangeNotifierProvider<CartProvider>(create: (_) => CartProvider()),
+          ChangeNotifierProvider<UserProvider>(create: (_) => UserProvider())
         ],
         child: MaterialApp(
             title: 'NewRX',
@@ -63,6 +67,10 @@ class MyApp extends StatelessWidget {
                   return MaterialPageRoute(
                     builder: (context) => SignUpScreen(),
                   );
+                case Register.routeName:
+                  return MaterialPageRoute(
+                    builder: (context) => Register(),
+                  );
 
                 case BottomNavScreen.routeName:
                   return MaterialPageRoute(
@@ -74,19 +82,19 @@ class MyApp extends StatelessWidget {
 
                   return MaterialPageRoute(
                     builder: (context) => CategoryScreen(
-                      category: args["category"] as String,
+                      category: args["category"] as Category,
                     ),
                   );
 
-                case ProductScreen.routeName:
-                  return MaterialPageRoute(
-                    builder: (context) => ProductScreen(),
-                  );
+                // case ProductScreen.routeName:
+                //   return MaterialPageRoute(
+                //     builder: (context) => ProductScreen(),
+                //   );
 
-                case CartScreen.routeName:
-                  return MaterialPageRoute(
-                    builder: (context) => CartScreen(),
-                  );
+                // case CartScreen.routeName:
+                //   return MaterialPageRoute(
+                //     builder: (context) => CartScreen(),
+                //   );
                 case PaymentScreen.routeName:
                   return MaterialPageRoute(
                     builder: (context) => PaymentScreen(),

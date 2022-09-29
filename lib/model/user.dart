@@ -12,6 +12,7 @@ class User {
   final int schoolId;
   final int hostelId;
   final String password;
+  String? token;
 
   User({
     required this.id,
@@ -23,24 +24,27 @@ class User {
     required this.password,
     required this.name,
     required this.email,
+    this.token,
   });
 
+  set setToken(String token) => this.token = token;
+
   User.fromJson(Map<String, dynamic> data)
-      : id = data['id'],
+      : id = data['id'] ?? '',
         dob = DateTime.parse(data['dob']),
         gender = _getGender(data['gender']),
         username = data['username'],
         schoolId = data['school_id'],
         hostelId = data['hostel_id'],
-        password = data['password'],
+        password = data['password'] ?? '',
         name = data['name'],
-        email = data['email'];
+        token = data['token'],
+        email = data['email'] ?? '';
 
   static Gender _getGender(String initial) =>
       Gender.MALE.initial == initial ? Gender.MALE : Gender.FEMALE;
 
   Map<String, dynamic> get toJson => {
-        'id': id,
         'dob': dob.toIso8601String(),
         'gender': gender.initial,
         'username': username,
@@ -48,6 +52,7 @@ class User {
         'hostel_id': hostelId,
         'password': password,
         'name': name,
-        'email': email
+        'email': email,
+        'token': token,
       };
 }

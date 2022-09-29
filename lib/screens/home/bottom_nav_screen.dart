@@ -89,7 +89,10 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
           ],
         ),
       ),
-      body: _screens[_currentBottomNavIndex],
+      body: IndexedStack(
+        index: _currentBottomNavIndex,
+        children: _screens,
+      ),
     );
   }
 }

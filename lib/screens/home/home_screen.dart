@@ -1,21 +1,43 @@
 import 'package:contra/constants/colors.dart';
+import 'package:contra/data/temp_data.dart';
+import 'package:contra/model/category.dart';
+import 'package:contra/model/product.dart';
+import 'package:contra/model/user.dart';
+import 'package:contra/providers/user_provider.dart';
+import 'package:contra/screens/cart/cart_screen.dart';
+import 'package:contra/service/api_service.dart';
 import 'package:contra/utils/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gradient_like_css/gradient_like_css.dart';
 import 'package:contra/widgets/products/top_category_chip.dart';
 import 'package:contra/widgets/products/deals_product_card.dart';
+import 'package:provider/provider.dart';
 
+import '../../providers/cart_provider.dart';
 import '../../widgets/products/highlight_deal_card.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  late ApiService _apiService;
+  @override
+  void initState() {
+    super.initState();
+    _apiService = GetIt.instance<ApiService>();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:Color(0xFFF7FBFF),
+      backgroundColor: Color(0xFFF7FBFF),
       body: SingleChildScrollView(
         child: Stack(
           children: [
@@ -38,7 +60,28 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                   addVerticalSpace(8.h),
-                  _buildCategoriesList(),
+                  FutureBuilder(
+                      future: _apiService.getCategories(
+                          token: Provider.of<UserProvider>(context)
+                                  .getUser
+                                  ?.token ??
+                              ''),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        }
+                        if (snapshot.hasError) {
+                          return const Center(
+                              child: Text('Error while getting data'));
+                        }
+                        if (snapshot.hasData) {
+                          return _buildCategoriesList(
+                              snapshot.data as List<Category>);
+                        }
+                        return Container();
+                      }),
                   addVerticalSpace(23.h),
                   HighlightDealCard(),
                   addVerticalSpace(24.h),
@@ -65,7 +108,29 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  _buildDealsList(),
+                  FutureBuilder(
+                      future: _apiService.getProducts(
+                          token: Provider.of<UserProvider>(context)
+                                  .getUser
+                                  ?.token ??
+                              ''),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        }
+                        if (snapshot.hasError) {
+                          return const Center(
+                            child: Text('Error getting data'),
+                          );
+                        }
+                        if (snapshot.hasData) {
+                          return _buildDealsList(
+                              (snapshot.data as List<Product>).sublist(0, 4));
+                        }
+                        return Container();
+                      }),
                   addVerticalSpace(24.h),
                   Text(
                     "Featured Brands",
@@ -116,21 +181,56 @@ class HomeScreen extends StatelessWidget {
                     icon: Icon(Icons.notifications_outlined),
                     onPressed: () {},
                   ),
-                  IconButton(
-                    icon: Icon(Icons.shopping_bag_outlined),
-                    onPressed: () {},
-                  ),
+                  GestureDetector(
+                    onTap: () {},
+                    child: Stack(
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.shopping_bag_outlined,
+                              color: primaryDeepBlueText),
+                          onPressed: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => const CartScreen())),
+                        ),
+                        Positioned(
+                          right: 10,
+                          top: 5,
+                          child: ClipOval(
+                              child: Container(
+                            color: Colors.red,
+                            width: 15.sp,
+                            height: 15.sp,
+                            child: Consumer<CartProvider>(
+                                builder: (context, value, child) {
+                              return Center(
+                                child: Text(
+                                  value.products.length.toString(),
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 10.sp,
+                                      fontWeight: FontWeight.w700),
+                                ),
+                              );
+                            }),
+                          )),
+                        )
+                      ],
+                    ),
+                  )
                 ],
               )
             ],
           ),
           addVerticalSpace(18.h),
-          Text(
-            "Hi Ben",
-            style: GoogleFonts.overpass(
-              color: Color(0xFF1A2D5D),
-              fontSize: 24.0.sp,
-              fontWeight: FontWeight.w700,
+          Consumer<UserProvider>(
+            builder: (_, value, child) => Text(
+              "Hi ${value.getUser?.name}",
+              style: GoogleFonts.overpass(
+                color: Color(0xFF1A2D5D),
+                fontSize: 24.0.sp,
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ),
           addVerticalSpace(3.h),
@@ -179,48 +279,52 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildCategoriesList() {
+  Widget _buildCategoriesList(List<Category> categories) {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
-        children: [
-          TopCategoryChip(
-              imgUrl: "img",
-              title: "Dental",
-              bg: linearGradient(180, ["#FF9598 0%", "#FF70A7 100%"])),
-          TopCategoryChip(
-              imgUrl: "img_1",
-              title: "Wellness",
-              bg: linearGradient(180, ["#19E5A5 0%", "#15BD92 100%"])),
-          TopCategoryChip(
-              imgUrl: "img_2",
-              title: "Homeo",
-              bg: linearGradient(180, ["#FFC06F 0%", "#FF793A 100%"])),
-          TopCategoryChip(
-              imgUrl: "img_3",
-              title: "Eye\ncare",
-              bg: linearGradient(180, ["#4DB7FF 0%", "#3E7DFF 100%"])),
-          TopCategoryChip(
-              imgUrl: "img_5",
-              title: "Skin & Hair",
-              bg: linearGradient(180, ["#828282 0%", "#090F47 100%"])),
-        ],
-      ),
+          children: categories
+              .asMap()
+              .map((i, value) => MapEntry(
+                  i,
+                  TopCategoryChip(
+                      category: categories[i],
+                      imgUrl: 'img_1',
+                      title: value.categoryName,
+                      bg: linearGradient(180, ["#FF9598 0%", "#FF70A7 100%"]))))
+              .values
+              .toList()
+          // [
+          //   TopCategoryChip(
+          //       imgUrl: "img",
+          //       title: "Dental",
+          //       bg: linearGradient(180, ["#FF9598 0%", "#FF70A7 100%"])),
+          // TopCategoryChip(
+          //     imgUrl: "img_1",
+          //     title: "Wellness",
+          //     bg: linearGradient(180, ["#19E5A5 0%", "#15BD92 100%"])),
+          // TopCategoryChip(
+          //     imgUrl: "img_2",
+          //     title: "Homeo",
+          //     bg: linearGradient(180, ["#FFC06F 0%", "#FF793A 100%"])),
+          // TopCategoryChip(
+          //     imgUrl: "img_3",
+          //     title: "Eye\ncare",
+          //     bg: linearGradient(180, ["#4DB7FF 0%", "#3E7DFF 100%"])),
+          // TopCategoryChip(
+          //     imgUrl: "img_5",
+          //     title: "Skin & Hair",
+          //     bg: linearGradient(180, ["#828282 0%", "#090F47 100%"])),
+          // ],
+          ),
     );
   }
 
-
-
-  Widget _buildDealsList() {
+  Widget _buildDealsList(List<Product> products) {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
-        children: [
-          DealsProductCard(),
-          DealsProductCard(),
-          DealsProductCard(),
-          DealsProductCard(),
-        ],
+        children: products.map((e) => DealsProductCard(product: e)).toList(),
       ),
     );
   }
