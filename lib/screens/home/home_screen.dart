@@ -5,6 +5,7 @@ import 'package:contra/model/product.dart';
 import 'package:contra/model/user.dart';
 import 'package:contra/providers/user_provider.dart';
 import 'package:contra/screens/cart/cart_screen.dart';
+import 'package:contra/screens/search_product_screen.dart';
 import 'package:contra/service/api_service.dart';
 import 'package:contra/utils/ui.dart';
 import 'package:flutter/material.dart';
@@ -249,34 +250,55 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildSearchField() {
-    return Container(
-      height: 60.h,
-      padding: EdgeInsets.only(right: 24.w),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(56.r),
-        boxShadow: <BoxShadow>[
-          BoxShadow(
-            color: Color(0xFF000000).withOpacity(0.07),
-            offset: Offset(0.0, 6.0),
-            blurRadius: 14.0,
-          ),
-        ],
-      ),
-      child: TextFormField(
-        decoration: InputDecoration(
-          hintText: "Search Medicine & Healthcare products",
-          filled: true,
-          fillColor: Colors.white,
-          border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(56.r),
-              borderSide: BorderSide.none),
-          prefixIcon: IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.search),
-          ),
-        ),
-      ),
-    );
+    return Consumer<UserProvider>(builder: (context, value, child) {
+      return FutureBuilder(
+          future: _apiService.getProducts(token: value.getUser?.token ?? ''),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Container();
+            }
+            if (snapshot.hasData) {
+              return InkWell(
+                onTap: () {
+                  showSearch(
+                      context: context,
+                      delegate: SearchProductScreen(
+                          products: snapshot.data as List<Product>));
+                },
+                child: Container(
+                  height: 60.h,
+                  padding: EdgeInsets.only(right: 24.w),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(56.r),
+                    boxShadow: <BoxShadow>[
+                      BoxShadow(
+                        color: Color(0xFF000000).withOpacity(0.07),
+                        offset: Offset(0.0, 6.0),
+                        blurRadius: 14.0,
+                      ),
+                    ],
+                  ),
+                  child: TextFormField(
+                    enabled: false,
+                    decoration: InputDecoration(
+                      hintText: "Search Medicine & Healthcare products",
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(56.r),
+                          borderSide: BorderSide.none),
+                      prefixIcon: IconButton(
+                        onPressed: () {},
+                        icon: Icon(Icons.search),
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            }
+            return Container();
+          });
+    });
   }
 
   Widget _buildCategoriesList(List<Category> categories) {

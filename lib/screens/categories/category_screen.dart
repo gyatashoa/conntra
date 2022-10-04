@@ -170,6 +170,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
             ),
             addVerticalSpace(14.h),
             Text(product.name,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
                 style: GoogleFonts.poppins(
                   color: primaryDeepBlueText,
                   fontSize: 13.0.sp,

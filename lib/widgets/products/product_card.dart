@@ -59,6 +59,8 @@ class ProductCard extends StatelessWidget {
                   children: [
                     Text(
                       product.name,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(fontSize: 13.0.sp, height: 1.46),
                     ),
                     addVerticalSpace(8.h),
