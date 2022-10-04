@@ -63,56 +63,56 @@ class SignUpScreen extends StatelessWidget {
                   )),
             ),
             addVerticalSpace(10.h),
-            ElevatedButton(
-              onPressed: () {},
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset("assets/images/social_icons/facebook(3)1.png"),
-                  addHorizontalSpace(21.w),
-                  Text(
-                    "CONTINUE WITH FACEBOOK",
-                    style: TextStyle(
-                        fontSize: 13.0.sp,
-                        fontWeight: FontWeight.w700,
-                        color: primaryDeepBlueText.withOpacity(0.75)),
-                  ),
-                ],
-              ),
-              style: ElevatedButton.styleFrom(
-                  elevation: 0,
-                  minimumSize: const Size.fromHeight(50),
-                  primary: Colors.white,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(56.0),
-                      side: BorderSide(color: primaryGreyText, width: 1))),
-            ),
-            addVerticalSpace(10.h),
-            ElevatedButton(
-              onPressed: () {},
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                      "assets/images/social_icons/google-hangouts(1)1.png"),
-                  addHorizontalSpace(21.w),
-                  Text(
-                    "CONTINUE WITH GMAIL",
-                    style: TextStyle(
-                        fontSize: 13.0.sp,
-                        fontWeight: FontWeight.w700,
-                        color: primaryDeepBlueText.withOpacity(0.75)),
-                  ),
-                ],
-              ),
-              style: ElevatedButton.styleFrom(
-                  elevation: 0,
-                  minimumSize: const Size.fromHeight(50),
-                  primary: Colors.white,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(56.0),
-                      side: BorderSide(color: primaryGreyText, width: 1))),
-            ),
+            // ElevatedButton(
+            //   onPressed: () {},
+            //   child: Row(
+            //     mainAxisAlignment: MainAxisAlignment.center,
+            //     children: [
+            //       Image.asset("assets/images/social_icons/facebook(3)1.png"),
+            //       addHorizontalSpace(21.w),
+            //       Text(
+            //         "CONTINUE WITH FACEBOOK",
+            //         style: TextStyle(
+            //             fontSize: 13.0.sp,
+            //             fontWeight: FontWeight.w700,
+            //             color: primaryDeepBlueText.withOpacity(0.75)),
+            //       ),
+            //     ],
+            //   ),
+            //   style: ElevatedButton.styleFrom(
+            //       elevation: 0,
+            //       minimumSize: const Size.fromHeight(50),
+            //       primary: Colors.white,
+            //       shape: RoundedRectangleBorder(
+            //           borderRadius: BorderRadius.circular(56.0),
+            //           side: BorderSide(color: primaryGreyText, width: 1))),
+            // ),
+            // addVerticalSpace(10.h),
+            // ElevatedButton(
+            //   onPressed: () {},
+            //   child: Row(
+            //     mainAxisAlignment: MainAxisAlignment.center,
+            //     children: [
+            //       Image.asset(
+            //           "assets/images/social_icons/google-hangouts(1)1.png"),
+            //       addHorizontalSpace(21.w),
+            //       Text(
+            //         "CONTINUE WITH GMAIL",
+            //         style: TextStyle(
+            //             fontSize: 13.0.sp,
+            //             fontWeight: FontWeight.w700,
+            //             color: primaryDeepBlueText.withOpacity(0.75)),
+            //       ),
+            //     ],
+            //   ),
+            //   style: ElevatedButton.styleFrom(
+            //       elevation: 0,
+            //       minimumSize: const Size.fromHeight(50),
+            //       primary: Colors.white,
+            //       shape: RoundedRectangleBorder(
+            //           borderRadius: BorderRadius.circular(56.0),
+            //           side: BorderSide(color: primaryGreyText, width: 1))),
+            // ),
             Center(
               child: TextButton(
                 child: Text(

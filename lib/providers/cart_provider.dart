@@ -41,6 +41,11 @@ class CartProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void clear() {
+    _products = [];
+    notifyListeners();
+  }
+
   void increaseProductCount(Cart cart) {
     _products
         .where((element) => element.product.equals(cart.product))

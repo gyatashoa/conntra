@@ -23,19 +23,30 @@ class _CartItemState extends State<CartItem> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        IntrinsicHeight(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Image.network(
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Flexible(
+              flex: 1,
+              child: Image.network(
                 widget.cart.product.image ?? defaultImg,
-                height: 80.h,
+                // height: 80.h,
+                fit: BoxFit.cover,
               ),
-              Column(
+            ),
+            const SizedBox(
+              width: 10,
+            ),
+            Flexible(
+              flex: 2,
+              fit: FlexFit.tight,
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(widget.cart.product.name,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                       style: GoogleFonts.poppins(
                         color: primaryDeepBlueText,
                         fontSize: 14.sp,
@@ -56,8 +67,11 @@ class _CartItemState extends State<CartItem> {
                       )),
                 ],
               ),
-              addHorizontalSpace(16.w),
-              Column(
+            ),
+            addHorizontalSpace(16.w),
+            Flexible(
+              flex: 1,
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -68,9 +82,12 @@ class _CartItemState extends State<CartItem> {
                       },
                       child: Iconify(
                         Uil.times_circle,
-                        size: 20.sp,
+                        size: 25.sp,
                         color: Colors.black.withOpacity(0.25),
                       )),
+                  SizedBox(
+                    height: 20,
+                  ),
                   Container(
                     width: 95.sp,
                     height: 32.sp,
@@ -135,9 +152,9 @@ class _CartItemState extends State<CartItem> {
                     ),
                   )
                 ],
-              )
-            ],
-          ),
+              ),
+            )
+          ],
         ),
         addVerticalSpace(16.h),
         Divider(

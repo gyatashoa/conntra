@@ -13,14 +13,12 @@ class TopCategoryChip extends StatelessWidget {
       required this.category,
       required this.title,
       Key? key,
-      required this.color,
       required this.bg})
       : super(key: key);
   final String imgUrl;
   final Category category;
   final String title;
   final LinearGradient bg;
-  final Color color;
 
   @override
   Widget build(BuildContext context) {

@@ -181,6 +181,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
               CCElevatedButton(
                   text: "Place Order",
                   onPress: () {
+                    Provider.of<CartProvider>(context, listen: false).clear();
                     Navigator.pushNamed(
                         context, PaymentConfirmScreen.routeName);
                   }),
