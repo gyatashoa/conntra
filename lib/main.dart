@@ -1,4 +1,6 @@
 import 'package:contra/model/category.dart';
+import 'package:contra/model/gender.dart';
+import 'package:contra/model/user.dart';
 import 'package:contra/providers/cart_provider.dart';
 import 'package:contra/providers/user_provider.dart';
 import 'package:contra/screens/auth/login_screen.dart';
@@ -11,24 +13,49 @@ import 'package:contra/screens/payment/payment_confirm_screen.dart';
 import 'package:contra/screens/payment/payment_screen.dart';
 import 'package:contra/screens/products/product_screen.dart';
 import 'package:contra/service/locator.dart';
+import 'package:contra/service/storage_service.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:contra/constants/colors.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:contra/screens/categories/category_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
-void main() {
+import 'constants/stripe_api_key.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.dark));
+  Stripe.publishableKey = stripePublishableKey;
+  await Hive.initFlutter();
+  Hive.registerAdapter(GenderAdapter());
+  Hive.registerAdapter(UserAdapter());
   registerServices();
-  runApp(const MyApp());
+  await getIt.allReady();
+  final res = GetIt.instance<StorageService>().getUser;
+  bool isLoggedIn = false;
+  if (res != null) {
+    isLoggedIn = true;
+  }
+  runApp(MyApp(
+    isLoggedIn: isLoggedIn,
+    user: res,
+  ));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  final bool isLoggedIn;
+  final User? user;
+  const MyApp({Key? key, required this.isLoggedIn, required this.user})
+      : super(key: key);
 
   // This widget is the root of your application.
   @override
@@ -38,7 +65,11 @@ class MyApp extends StatelessWidget {
       builder: (context, child) => MultiProvider(
         providers: [
           ChangeNotifierProvider<CartProvider>(create: (_) => CartProvider()),
-          ChangeNotifierProvider<UserProvider>(create: (_) => UserProvider())
+          isLoggedIn
+              ? ChangeNotifierProvider<UserProvider>(
+                  create: (_) => UserProvider(user: user))
+              : ChangeNotifierProvider<UserProvider>(
+                  create: (_) => UserProvider())
         ],
         child: MaterialApp(
             title: 'NewRX',
@@ -53,7 +84,9 @@ class MyApp extends StatelessWidget {
               colorScheme:
                   Theme.of(context).colorScheme.copyWith(primary: primaryColor),
             ),
-            initialRoute: OnBoardingStart.routeName,
+            initialRoute: isLoggedIn
+                ? BottomNavScreen.routeName
+                : OnBoardingStart.routeName,
             onGenerateRoute: (settings) {
               switch (settings.name) {
                 case OnBoardingStart.routeName:

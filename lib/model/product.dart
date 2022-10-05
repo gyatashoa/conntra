@@ -9,7 +9,7 @@ class Product extends Equatable {
   final String? image;
   final double? price;
   final String description;
-  final String stock;
+  final String? stock;
 
   Product(
       {required this.id,
@@ -24,9 +24,15 @@ class Product extends Equatable {
   Product.fromJson(Map<String, dynamic> data)
       : name = data['name'] ?? data['product_name'],
         description = data['description'] ?? '',
-        price = data['price'] == null ? null : double.tryParse(data['price']),
+        price = data['price'] == null
+            ? null
+            : (data['price'] is double
+                ? data['price']
+                : double.tryParse(data['price'])),
         image = data['image'],
-        category = Category.fromJson(data['category']),
+        category = data['category'] is String
+            ? Category(categoryName: data['category'], categoryId: 1)
+            : Category.fromJson(data['category']),
         stock = data['stock'] ?? data['status'],
         id = data['id'],
         productCode = data['productCode'] ?? '';
@@ -36,7 +42,7 @@ class Product extends Equatable {
         'description': description,
         'price': price,
         'image': image,
-        'category': category,
+        'category': category.categoryName,
         'id': id,
         'productCode': productCode
       };

@@ -1,15 +1,24 @@
 import 'package:contra/constants/colors.dart';
 import 'package:contra/constants/sizing.dart';
+import 'package:contra/constants/stripe_api_key.dart';
+import 'package:contra/model/cart.dart';
+import 'package:contra/model/order.dart';
 import 'package:contra/providers/cart_provider.dart';
+import 'package:contra/providers/user_provider.dart';
 import 'package:contra/screens/payment/payment_confirm_screen.dart';
+import 'package:contra/service/cloud_firestore_service.dart';
 import 'package:contra/utils/ui.dart';
 import 'package:contra/widgets/gloabal/cc_elevated_button.dart';
 import 'package:contra/widgets/payment/address_tile.dart';
 import 'package:contra/widgets/payment/payment_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class PaymentScreen extends StatefulWidget {
   const PaymentScreen({Key? key}) : super(key: key);
@@ -20,7 +29,123 @@ class PaymentScreen extends StatefulWidget {
 }
 
 class _PaymentScreenState extends State<PaymentScreen> {
-  String selectedPaymentMethod = "vodafone";
+  String selectedPaymentMethod = "cc";
+
+  Map<String, dynamic>? paymentIntent;
+  bool isLoading = false;
+
+  calculateAmount(String amount) {
+    final calculatedAmout = (int.parse(amount)) * 100;
+    return calculatedAmout.toString();
+  }
+
+  createPaymentIntent(String amount, String currency) async {
+    try {
+      Map<String, dynamic> body = {
+        'amount': calculateAmount(amount),
+        'currency': currency,
+        'payment_method_types[]': 'card'
+      };
+
+      var response = await http.post(
+        Uri.parse('https://api.stripe.com/v1/payment_intents'),
+        headers: {
+          'Authorization': 'Bearer $SECRET_KEY',
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: body,
+      );
+      // ignore: avoid_print
+      print('Payment Intent Body->>> ${response.body.toString()}');
+      return jsonDecode(response.body);
+    } catch (err) {
+      // ignore: avoid_print
+      print('err charging user: ${err.toString()}');
+    }
+  }
+
+  Future<void> makePayment(String amount, Order order) async {
+    try {
+      setState(() {
+        isLoading = true;
+      });
+      paymentIntent = await createPaymentIntent(amount, 'USD');
+      //Payment Sheet
+      await Stripe.instance
+          .initPaymentSheet(
+              paymentSheetParameters: SetupPaymentSheetParameters(
+                  paymentIntentClientSecret: paymentIntent!['client_secret'],
+                  // applePay: const PaymentSheetApplePay(merchantCountryCode: '+92',),
+                  // googlePay: const PaymentSheetGooglePay(testEnv: true, currencyCode: "US", merchantCountryCode: "+92"),
+                  style: ThemeMode.dark,
+                  merchantDisplayName: 'Adnan'))
+          .then((value) {});
+
+      ///now finally display payment sheeet
+      displayPaymentSheet(order);
+    } catch (e, s) {
+      print('exception:$e$s');
+      setState(() {
+        false;
+      });
+    }
+  }
+
+  displayPaymentSheet(Order order) async {
+    try {
+      await Stripe.instance.presentPaymentSheet().then((value) async {
+        await GetIt.instance<CloudFirestoreService>().placeOrder(order);
+        setState(() {
+          false;
+        });
+        showDialog(
+            context: context,
+            builder: (_) => AlertDialog(
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        children: const [
+                          Icon(
+                            Icons.check_circle,
+                            color: Colors.green,
+                          ),
+                          Text("Payment Successfull"),
+                        ],
+                      ),
+                    ],
+                  ),
+                )).then((value) {
+          delAddress = null;
+          Provider.of<CartProvider>(context, listen: false).clear();
+          Navigator.pushNamed(context, PaymentConfirmScreen.routeName);
+        });
+        // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("paid successfully")));
+
+        paymentIntent = null;
+      }).onError((error, stackTrace) {
+        print('Error is:--->$error $stackTrace');
+        setState(() {
+          false;
+        });
+      });
+    } on StripeException catch (e) {
+      print('Error is:---> $e');
+      showDialog(
+          context: context,
+          builder: (_) => const AlertDialog(
+                content: Text("Cancelled "),
+              ));
+      setState(() {
+        false;
+      });
+    } catch (e) {
+      print('$e');
+      setState(() {
+        false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -131,60 +256,78 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 child: Column(
                   children: [
                     PaymentTile(
+                      title: "Credit card",
+                      imgPath: "cc",
+                      groupValue: selectedPaymentMethod,
+                      value: "cc",
+                      onChange: (value) {},
+                    ),
+                    PaymentTile(
                       title: "VODAFONE CASH",
                       imgPath: "vodafone_cash",
                       groupValue: selectedPaymentMethod,
                       value: "vodafone",
-                      onChange: (value) {
-                        setState(() {
-                          selectedPaymentMethod = value!;
-                        });
-                      },
+                      onChange: (value) {},
                     ),
                     PaymentTile(
                       title: "AIRTEL TIGO MONEY",
                       imgPath: "airtel",
                       groupValue: selectedPaymentMethod,
                       value: "airtel",
-                      onChange: (value) {
-                        setState(() {
-                          selectedPaymentMethod = value!;
-                        });
-                      },
+                      onChange: (value) {},
                     ),
                     PaymentTile(
                       title: "MTN MOBILE MONEY",
                       imgPath: "mtn",
                       groupValue: selectedPaymentMethod,
                       value: "mtn",
-                      onChange: (value) {
-                        setState(() {
-                          selectedPaymentMethod = value!;
-                        });
-                      },
+                      onChange: (value) {},
                     ),
                     PaymentTile(
                       title: "Cash",
                       imgPath: "ghpay",
                       groupValue: selectedPaymentMethod,
                       value: "cash",
-                      onChange: (value) {
-                        setState(() {
-                          selectedPaymentMethod = value!;
-                        });
-                      },
+                      onChange: (value) {},
                     ),
                   ],
                 ),
               ),
               addVerticalSpace(70.h),
-              CCElevatedButton(
-                  text: "Place Order",
-                  onPress: () {
-                    Provider.of<CartProvider>(context, listen: false).clear();
-                    Navigator.pushNamed(
-                        context, PaymentConfirmScreen.routeName);
-                  }),
+              isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : CCElevatedButton(
+                      text: "Place Order",
+                      onPress: () async {
+                        if (delAddress == null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  duration: Duration(seconds: 1),
+                                  content:
+                                      Text('Please selection a destination')));
+                          return;
+                        }
+                        await makePayment(
+                            Provider.of<CartProvider>(context, listen: false)
+                                .computePrice
+                                .toInt()
+                                .toString(),
+                            Order(
+                                id: '',
+                                createdAt: DateTime.now(),
+                                cart: Provider.of<CartProvider>(context,
+                                        listen: false)
+                                    .products,
+                                price: Provider.of<CartProvider>(context,
+                                        listen: false)
+                                    .computePrice,
+                                email: Provider.of<UserProvider>(context,
+                                            listen: false)
+                                        .getUser
+                                        ?.email ??
+                                    '',
+                                location: delAddress ?? ''));
+                      }),
               addVerticalSpace(30.h),
             ],
           ),
@@ -193,3 +336,5 @@ class _PaymentScreenState extends State<PaymentScreen> {
     );
   }
 }
+
+String? delAddress;

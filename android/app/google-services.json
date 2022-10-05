@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "649991860801",
+    "project_id": "e-pharmacy-ff008",
+    "storage_bucket": "e-pharmacy-ff008.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:649991860801:android:2f78c1796179c897328cc0",
+        "android_client_info": {
+          "package_name": "com.contra.contra"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "649991860801-2k63rke61djsecto3jaal5sb3vht7c87.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDkrE-buZLWKodwTPr4MI25Y3VUphRuEz0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "649991860801-2k63rke61djsecto3jaal5sb3vht7c87.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

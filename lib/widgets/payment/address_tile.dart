@@ -1,5 +1,6 @@
 import 'package:contra/constants/colors.dart';
 import 'package:contra/model/prediction.dart';
+import 'package:contra/screens/payment/payment_screen.dart';
 import 'package:contra/screens/places/places_screen.dart';
 import 'package:contra/utils/ui.dart';
 import 'package:flutter/material.dart';
@@ -59,6 +60,7 @@ class _AddressTileState extends State<AddressTile> {
             if (res != null) {
               setState(() {
                 prediction = res;
+                delAddress = prediction?.mainText;
               });
             }
           },

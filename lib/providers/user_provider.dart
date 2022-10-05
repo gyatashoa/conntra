@@ -5,7 +5,9 @@ import '../model/user.dart';
 class UserProvider extends ChangeNotifier {
   late User? _user;
 
-  UserProvider();
+  UserProvider({User? user}) {
+    _user = user;
+  }
 
   set setUser(User user) {
     _user = user;

@@ -6,7 +6,9 @@ import 'package:contra/model/news.dart';
 import 'package:contra/model/prediction.dart';
 import 'package:contra/model/product.dart';
 import 'package:contra/model/user.dart';
+import 'package:contra/service/storage_service.dart';
 import 'package:dio/dio.dart';
+import 'package:get_it/get_it.dart';
 
 class ApiService {
   late Dio _dio;
@@ -22,7 +24,11 @@ class ApiService {
       if (res.statusCode == null) throw Exception('Invalid status code');
       String? msg = _getErrorMsg(res.statusCode!);
       //TODO: return user details here
-      if (msg == null) return User.fromJson(res.data['data']);
+      if (msg == null) {
+        final data = User.fromJson(res.data['data']);
+        await GetIt.instance<StorageService>().saveUser(data);
+        return data;
+      }
       return msg;
     } on DioError catch (e) {
       if (e.response?.data["errors"] == null) {
@@ -139,7 +145,11 @@ class ApiService {
       if (res.statusCode == null) throw Exception('Invalid status code');
       String? msg = _getErrorMsg(res.statusCode!);
       //TODO: return user details here
-      if (msg == null) return User.fromJson(res.data['data']);
+      if (msg == null) {
+        final data = User.fromJson(res.data['data']);
+        await GetIt.instance<StorageService>().saveUser(data);
+        return data;
+      }
       return msg;
     } on DioError catch (e) {
       return Map<String, dynamic>.from(e.response?.data["errors"])
@@ -149,6 +159,10 @@ class ApiService {
     } on Exception {
       return 'An error while trying to signup';
     }
+  }
+
+  Future<void> logout() async {
+    await GetIt.instance<StorageService>().deleteUser();
   }
 
   String? _getErrorMsg(int statusCode) {

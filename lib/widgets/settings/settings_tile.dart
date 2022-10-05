@@ -5,8 +5,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class SettingsTile extends StatelessWidget {
-  const SettingsTile({Key? key, required this.icon, required this.title})
+  const SettingsTile(
+      {Key? key, this.fn, required this.icon, required this.title})
       : super(key: key);
+  final VoidCallback? fn;
   final Widget icon;
   final String title;
   @override
@@ -22,7 +24,7 @@ class SettingsTile extends StatelessWidget {
             contentPadding: EdgeInsets.only(
               right: 16.w,
             ),
-            onTap: () {},
+            onTap: fn,
             leading: icon,
             title: Text(title,
                 style: GoogleFonts.overpass(

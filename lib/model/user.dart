@@ -1,17 +1,31 @@
 //TODO: will add more attributes
 
 import 'package:contra/model/gender.dart';
+import 'package:hive/hive.dart';
 
+part 'user.g.dart';
+
+@HiveType(typeId: 1)
 class User {
+  @HiveField(0)
   final String id;
+  @HiveField(1)
   final String name;
+  @HiveField(2)
   final DateTime dob;
+  @HiveField(3)
   final Gender gender;
+  @HiveField(4)
   final String username;
+  @HiveField(5)
   final String email;
+  @HiveField(6)
   final int schoolId;
+  @HiveField(7)
   final int hostelId;
+  @HiveField(8)
   final String password;
+  @HiveField(9)
   String? token;
 
   User({
